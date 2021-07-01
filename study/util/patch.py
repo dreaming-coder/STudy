@@ -1,10 +1,9 @@
 """
-解决输入尺寸过大导致的显存爆炸的问题，提供分割函数和恢复函数
+解决输入尺寸过大导致的显存爆炸的问题，提供分割函数和恢复函数。此处针对的是五维数据，需要其他情况使用的话自行修改
 """
 
 from torch import Tensor
 
-from exception import PatchException
 
 __all__ = ["reshape_patch", "reshape_patch_back"]
 
@@ -17,7 +16,7 @@ def reshape_patch(img_tensor: Tensor, patch_size: int) -> Tensor:
     batch, seq, channel, height, width = img_tensor.shape
 
     if height % patch_size or width % patch_size:
-        raise PatchException(patch_size=patch_size)
+        raise AssertionError(f"输入尺寸有问题{patch_size}")
 
     a = img_tensor.permute(0, 1, 3, 4, 2)
     b = a.reshape(batch, seq,
