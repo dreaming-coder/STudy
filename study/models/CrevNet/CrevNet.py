@@ -87,10 +87,10 @@ class CrevNet(nn.Module):
         return prediction
 
 
-if __name__ == '__main__':
-    net = CrevNet(in_channels=1, channels_list=[2, 8, 32, 128]).to("cuda")
-    inputs = torch.ones(2, 10, 1, 128, 128).to("cuda")
-    result = net(inputs, out_len=12)
-    print(result.shape)
-    mse = torch.nn.MSELoss()(result, result)
-    mse.backward()
+# if __name__ == '__main__':
+#     net = CrevNet(in_channels=1, channels_list=[2, 8, 32, 128]).to("cuda")
+#     inputs = torch.ones(2, 10, 1, 128, 128).to("cuda")
+#     result = net(inputs, out_len=12)
+#     print(result.shape)
+#     mse = torch.nn.MSELoss()(result, result)
+#     mse.backward()
