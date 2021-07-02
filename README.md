@@ -16,7 +16,7 @@
 
   这些模型均假定输入的 Tensor 的 shape 为 `(batch, sequence, channel, height, width)`
   
-  这里的目的是为了学习，尽可能内聚成一个个小的 odule 再组合的，应该效率很差
+  这里的目的是为了学习，尽可能内聚成一个个小的 Module 再组合的，应该效率很差
 
 - util 文件夹
 
