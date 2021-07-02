@@ -61,7 +61,7 @@ class ConvLSTMCell(nn.Module):
 
 
 # if __name__ == '__main__':
-#     device = "cpu"
+#     device = "cuda"
 #     cell = ConvLSTMCell(in_channels=64, hidden_channels=96, size=(50, 50)).to(device)
 #     x = torch.ones(3, 64, 50, 50).to(device)
 #     h = torch.zeros(3, 96, 50, 50).to(device)
