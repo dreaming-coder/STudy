@@ -74,7 +74,7 @@ class TestingTemplate(object):
         ground_truth = torch.cat(ground_truth, dim=0).cpu()
         prediction = torch.cat(prediction, dim=0).cpu()
 
-        torch.save(ground_truth, self.to_save.joinpath("ground_truth.pth"))
-        torch.save(prediction, self.to_save.joinpath("prediction.pth"))
+        torch.save(ground_truth, self.to_save.joinpath("labels.pth"))
+        torch.save(prediction, self.to_save.joinpath("outputs.pth"))
 
         return ground_truth, prediction
