@@ -6,6 +6,7 @@ from .MIM import MIM
 from .Eidetic3DLSTM import Eidetic3DLSTM
 from .CubicRNN import CubicRNN
 from .CrevNet import CrevNet
+from .FoldedRNN import FoldedRNN
 
 __all__ = [
     "ConvLSTM",
@@ -16,4 +17,5 @@ __all__ = [
     "Eidetic3DLSTM",
     "CubicRNN",
     "CrevNet",
+    "FoldedRNN",
 ]

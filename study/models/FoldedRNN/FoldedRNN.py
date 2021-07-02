@@ -145,6 +145,7 @@ class FoldedRNN(nn.Module):
 
         return prediction
 
+
 # if __name__ == '__main__':
 #     device = "cuda"
 #     folded_rnn = FoldedRNN(in_channels=1, img_shape=[64, 64]).to(device)
@@ -152,3 +153,4 @@ class FoldedRNN(nn.Module):
 #
 #     result = folded_rnn(inputs)
 #     print(result.shape)
+#     result.sum().backward()
