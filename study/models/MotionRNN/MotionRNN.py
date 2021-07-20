@@ -56,6 +56,7 @@ class MotionRNN(nn.Module):
 
         h = []  # 存储隐藏层
         c = []  # 存储cell记忆
+        o = []  # 输出门
         d = [None]
         f = [None]
         pred = []  # 存储预测结果
@@ -64,8 +65,10 @@ class MotionRNN(nn.Module):
         for i in range(self.layers):
             zero_tensor_h = torch.zeros(batch, self.hidden_channels_list[i], height, width).to(device)
             zero_tensor_c = torch.zeros(batch, self.hidden_channels_list[i], height, width).to(device)
+            zero_tensor_o = torch.zeros(batch, self.hidden_channels_list[i], height, width).to(device)
             h.append(zero_tensor_h)
             c.append(zero_tensor_c)
+            o.append(zero_tensor_o)
 
         for j in range(1, self.layers):
             zero_tensor_d = torch.zeros(batch, 2 * self.k ** 2, height // 2, width // 2).to(device)
@@ -82,11 +85,12 @@ class MotionRNN(nn.Module):
             else:
                 x = x_pred
 
-            h[0], c[0], m = self.cell_list[0](x, h[0], c[0], m)
+            h[0], c[0], m, o[0] = self.cell_list[0](x, h[0], c[0], m)
 
             for i in range(1, self.layers):
                 xx, f[i], d[i] = self.motion_gru[i - 1](h[i - 1], f[i], d[i])
-                h[i], c[i], m = self.cell_list[i](xx, h[i], c[i], m)
+                h[i], c[i], m, o[0] = self.cell_list[i](xx, h[i], c[i], m)
+                h[i] = h[i] + (1 - o[i]) * h[i - 1]
 
             x_pred = self.conv_last(h[self.layers - 1])
 
@@ -98,9 +102,10 @@ class MotionRNN(nn.Module):
 
         return prediction
 
-# if __name__ == '__main__':
-#     net = MotionRNN(in_channels=1, hidden_channels_list=[32, 32, 32, 32], kernel_size_list=[3, 3, 3, 3]).to("cuda")
-#     inputs = torch.ones(2, 10, 1, 100, 100).to("cuda")
-#     result = net(inputs, out_len=12)
-#     print(result.shape)
-#     result.sum().backward()
+
+if __name__ == '__main__':
+    net = MotionRNN(in_channels=1, hidden_channels_list=[32, 32, 32, 32], kernel_size_list=[3, 3, 3, 3]).to("cuda")
+    inputs = torch.ones(2, 10, 1, 100, 100).to("cuda")
+    result = net(inputs, out_len=12)
+    print(result.shape)
+    result.sum().backward()

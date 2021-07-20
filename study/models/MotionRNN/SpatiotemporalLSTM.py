@@ -54,7 +54,7 @@ class SpatiotemporalLSTM(nn.Module):
             kernel_size=(1, 1), stride=(1, 1), padding=(0, 0)
         )
 
-    def forward(self, x: Tensor, h: Tensor, c: Tensor, m: Tensor) -> Tuple[Tensor, Tensor, Tensor]:
+    def forward(self, x: Tensor, h: Tensor, c: Tensor, m: Tensor) -> Tuple[Tensor, Tensor, Tensor, Tensor]:
         r"""
         :param x:   输入的图像，shape 为 (B, in_channels, H, W)
         :param h:   时间方向隐藏状态，shape 为 (B, hidden_channels, H, W)
@@ -94,7 +94,7 @@ class SpatiotemporalLSTM(nn.Module):
         o = torch.sigmoid(o_x + o_h + self.conv_o(states))
         h = o * torch.tanh(self.conv1x1(states))
 
-        return h, c, m
+        return h, c, m, o
 
 
 # if __name__ == '__main__':
