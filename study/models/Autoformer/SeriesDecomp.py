@@ -1,32 +1,37 @@
+import math
+
 import torch
 from torch import nn, Tensor
+import torch.nn.functional as F
 
 __all__ = ["SeriesDecomp"]
 
 
 class SeriesDecomp(nn.Module):
-    def __init__(self, window: int):
+    def __init__(self):
         super(SeriesDecomp, self).__init__()
-        self.window = window
-        self.avg_pool = nn.AvgPool1d(kernel_size=window, stride=1)
 
     def forward(self, x: Tensor):
         """
         :param x:  (batch, d, L)
         :return: x_s, x_t  (batch, d ,L)
         """
-        batch, dimension, _ = x.shape
-        zeros_prefix = torch.zeros(batch, dimension, self.window - 1)
-        padding_x = torch.cat([zeros_prefix, x], dim=-1)
-        x_t = self.avg_pool(padding_x)
+        batch, dimension, length = x.shape
+        padding = math.ceil((length - 1) / 2)
+        scalar_pre = x[..., 0].reshape(batch, dimension, 1).repeat(1, 1, padding)
+        scalar_suf = x[..., -1].reshape(batch, dimension, 1).repeat(1, 1, padding)
+        padding_x = torch.cat([scalar_pre, x, scalar_suf], dim=-1)
+        x_t = F.avg_pool1d(padding_x, padding * 2 + 1, stride=1)
         x_s = x - x_t
         return x_s, x_t
 
 
 # if __name__ == '__main__':
-#     batch, d, l = 3, 5, 20
-#     x = torch.ones(batch, d, l)
-#     sd = SeriesDecomp(window=5)
-#     x_s, x_t = sd(x)
-#     print(x_s.shape)  # AvgPool1d
-#     print(x_t.shape)  # AvgPool1d
+#     d = 7
+#     l = 25
+#     a = torch.rand(size=(2, d, l))
+#     print(a.shape)
+#     dec = SeriesDecomp()
+#     c = dec(a)
+#     print(c[0].shape)
+#     print(c[1].shape)
